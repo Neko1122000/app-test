@@ -18,24 +18,28 @@ exports.home = async function (req, res) {
 
 exports.signup = async function(req, res) {
     if (req.body.username && req.body.email && req.body.password && req.body.passwordConf){
-        if (req.body.password === req.body.passwordConf) {
-            var newUser = new User({
-                name: req.body.name,
-                money: req.body.money,
-                username: req.body.username,
-                email: req.body.email,
-                password: req.body.password,
-            })
-
-            User.create(newUser)
-                .then(() => {
-                    res.redirect('/profile/' + newUser._id);
-                    req.session.userId = newUser._id;
+        var mail = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/;
+        if (req.body.email.match(mail)) {
+            if (req.body.password === req.body.passwordConf) {
+                var newUser = new User({
+                    name: req.body.name,
+                    money: req.body.money,
+                    username: req.body.username,
+                    email: req.body.email,
+                    password: req.body.password,
                 })
-                .catch(err => {console.log(err)});
 
+                await User.create(newUser)
+                    .then(() => {
+                        req.session.userId = newUser._id;
+                    })
+                    .catch(err => {
+                        console.log(err)
+                    });
+                res.redirect('/user/profile/');
+            } else res.send("Password not match");
         } else {
-            res.send("Password not match");
+            res.send('Email not Found');
         }
     }
 }
@@ -54,7 +58,7 @@ exports.login = async function(req, res) {
         if (err || !result) res.send('User not found')
         else {
             req.session.userId = result._id;
-            res.redirect('/profile');
+            res.redirect('/user/profile');
         }
     })
 
@@ -72,7 +76,7 @@ exports.list = async function (req, res) {
     res.send('testing');
 }
 
-/*exports.update = async function (req, res) {
-    User.findByIdAndUpdate(req.params.id, {$set: req.body}).then(() => res.send("Successfully Update"))
+exports.update = async function (req, res) {
+    User.findByIdAndUpdate(req.session.userId, {$set: req.body}).then(() => res.send("Successfully Update"))
         .catch(err => console.log(err));
-}*/
+}

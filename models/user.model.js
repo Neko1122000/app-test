@@ -7,12 +7,19 @@ var UserSchema = new Schema ({
     username: {type: String, unique: true, required: true, trim: true},
     email: {type: String, unique: true, required: true, trim: true},
     password: {type: String, required: true},
-    name: {type: String, required: true, max:100},
-    money: {type: Number, required: true, min: 0},
     buyList: [{
         product: {type: mongoose.Schema.Types.ObjectId, ref: ProductSchema, required: true},
         number: {type: Number, min: 0},
-    }]
+    }],
+
+    name: {type: String, required: true, max:100},
+    money: {type: Number, required: true, min: 0},
+
+    role: {
+        type: String,
+        default: "user",
+        enum: ["user", "admin"]
+    },
 })
 
 UserSchema.pre('save', function(next) {

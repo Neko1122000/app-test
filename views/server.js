@@ -30,6 +30,8 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 app.use('/', product);
 
+//require('../models/seed');
+
 app.listen(port, () => {
     console.log("Testing port: " + port);
 });

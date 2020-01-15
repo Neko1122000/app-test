@@ -38,6 +38,6 @@ exports.product_delete = function(req, res) {
 };
 
 exports.list = async function(req, res) {
-    await Product.find({}).sort({'name': 1}).exec((err, element) => console.log(element));
+    await Product.find({}).sort({'name': 1}).then(element => res.send(element));
     res.send('testing');
 }

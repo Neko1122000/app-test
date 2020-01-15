@@ -72,7 +72,6 @@ exports.buy_list = async function (req, res) {
 }
 
 exports.profile = async function(req, res) {
-    //console.log(req.session.userId);
     User.findById(req.session.userId).populate('buyList.product').exec((err, element) => {
         if (err) {
             console.log(err);
@@ -80,7 +79,7 @@ exports.profile = async function(req, res) {
             //return next(err);
         } else if (element === null) {
             res.status = 400;
-            res.send('Not Authorized');
+            res.send('Not Authorized in profile');
         } else res.send(element);
     });
 }
